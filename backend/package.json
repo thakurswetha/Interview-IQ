@@ -1,0 +1,35 @@
+{
+  "name": "interviewiq-backend",
+  "version": "1.0.0",
+  "description": "Backend API for InterviewIQ - AI-Powered Personalized Interview & Career Readiness Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test-backend.js",
+    "test:qa": "node test-qa-comprehensive.js"
+  },
+  "keywords": [
+    "interview",
+    "ai",
+    "mock-interview",
+    "resume-parser",
+    "career-readiness"
+  ],
+  "author": "InterviewIQ Team",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "jsonwebtoken": "^9.0.2",
+    "mammoth": "^1.8.0",
+    "mongoose": "^8.9.5",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "puppeteer-core": "^25.18.1",
+    "uuid": "^11.0.5"
+  }
+}
