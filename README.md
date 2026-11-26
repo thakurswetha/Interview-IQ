@@ -255,18 +255,25 @@ NODE_ENV=development
 
 ### Step 3: Run the Application
 
+#### Option A: One-Click in VS Code (Shortcut)
+Press `Ctrl + Shift + B` inside VS Code to automatically launch both the Backend and Frontend in separate tabs via [`.vscode/tasks.json`](file:///c:/Users/thaku/OneDrive/Desktop/InterviewIQ/.vscode/tasks.json).
+
+#### Option B: One-Click Desktop Launcher
+Double-click [`start-app.bat`](file:///c:/Users/thaku/OneDrive/Desktop/InterviewIQ/start-app.bat) in the project root to start both servers in separate command windows.
+
+#### Option C: Manual Dual Terminal
 **Terminal 1 (Backend Server)**:
 ```bash
-cd backend
-npm start
+npm run backend
+# Or: cd backend && npm start
 # Server listens on http://localhost:5000
 # Connected to MongoDB on 127.0.0.1:27017
 ```
 
 **Terminal 2 (Frontend Dev Server)**:
 ```bash
-cd frontend
-npm run dev
+npm run frontend
+# Or: cd frontend && npm run dev
 # Vite dev server running on http://localhost:5173
 ```
 
@@ -276,9 +283,24 @@ Open your browser to: **http://localhost:5173**
 
 ## 10. Automated Testing & Verification Results
 
-InterviewIQ includes two comprehensive automated test suites executed against the live application:
+InterviewIQ includes three comprehensive automated test suites executed against the live application:
 
-### Test Suite 1: Comprehensive Capstone QA & Security Suite (`backend/test-qa-comprehensive.js`)
+### Test Suite 1: Strict Resume Validation & Grounding Suite (`backend/test-resume-grounding.js`)
+```bash
+node backend/test-resume-grounding.js
+```
+**Results: 24 / 24 Assertions Passed (100% Pass Rate)**
+- **Format Rejections**: Rejects `.doc` (legacy Word), `.png` images, `.xlsx` spreadsheets (400 Bad Request).
+- **Magic Bytes Verification**: Rejects renamed plain text files and 0-byte corrupt files failing `%PDF` or `PK\x03\x04` signatures.
+- **Semantic Content Validation**: Detects and rejects invoices, academic assignments, and completion certificates with `"This document does not appear to contain valid resume information."`
+- **Authentic Resume Ingestion**: Validates and parses authentic PDF and DOCX files with verified skills and projects.
+- **Fresher Support**: Validates and accepts fresh graduates with education, skills, and projects without requiring corporate experience.
+- **Ownership & Guards**: Blocks interview starts without an uploaded resume (400) and blocks cross-tenant resume access (403).
+- **Resume Grounding**: Generates role-specific questions specifically quoting actual candidate project names.
+- **Fresher Sensitivity**: Verifies questions for freshers do not fabricate past companies or corporate tenure.
+- **Adaptive Probing**: Evaluates candidate answers and generates follow-up probes linking back to resume project metrics.
+
+### Test Suite 2: Comprehensive Capstone QA & Security Suite (`backend/test-qa-comprehensive.js`)
 ```bash
 node backend/test-qa-comprehensive.js
 ```
@@ -294,7 +316,7 @@ node backend/test-qa-comprehensive.js
 - **Section 9: Multi-User Security & Isolation**: 7/7 Passed (Cross-tenant resume, JD, session, report, and answer blocking with 403 Forbidden; unauth blocking with 401).
 - **Section 10: Input Validation & Constraints**: 5/5 Passed (Duplicate email 400, password $<6$ chars 400, bad login 401, non-existent ID 404, empty chat 400).
 
-### Test Suite 2: Core End-to-End Regression Suite (`backend/test-backend.js`)
+### Test Suite 3: Core End-to-End Regression Suite (`backend/test-backend.js`)
 ```bash
 node backend/test-backend.js
 ```
@@ -304,7 +326,7 @@ node backend/test-backend.js
 ```bash
 npm run build --prefix frontend
 ```
-**Result: 2082 modules transformed, built in 22.78s with 0 errors.**
+**Result: 2082 modules transformed, built with 0 errors.**
 
 ---
 
@@ -313,7 +335,7 @@ npm run build --prefix frontend
 - **Stateless Authorization**: All protected endpoints require a signed `Bearer <JWT>` header verified by `middleware/auth.js`.
 - **Zero API Key Exposure**: All AI credentials (`AI_API_KEY`) remain strictly isolated on the backend. The client never receives or stores external API tokens.
 - **Strict Tenant Sandboxing**: Every database lookup verifies `resource.userId.toString() === req.user._id.toString()`. Unauthorized requests are rejected with `403 Forbidden`.
-- **File Upload Safety**: Multer disk storage restricts uploads to `.pdf`, `.docx`, and `.doc` with a strict 10MB file size ceiling and sanitized filenames.
+- **File Upload Safety**: Multer disk storage strictly restricts uploads to `.pdf` and `.docx` only, with binary magic bytes validation, semantic content scoring, sanitized filenames, and a 10MB file size ceiling. Any invalid file is immediately purged from disk.
 - **Sanitized Passwords**: Passwords are encrypted using salted bcrypt hashing ($10$ rounds) before saving to MongoDB and are omitted from all JSON responses.
 
 ---

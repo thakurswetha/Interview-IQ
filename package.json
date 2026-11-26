@@ -1,0 +1,13 @@
+{
+  "name": "interviewiq-root",
+  "version": "1.0.0",
+  "description": "InterviewIQ - AI-Powered Personalized Interview & Career Readiness Platform",
+  "scripts": {
+    "backend": "npm start --prefix backend",
+    "backend:dev": "npm run dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
+    "test:backend": "npm test --prefix backend",
+    "test:grounding": "node backend/test-resume-grounding.js",
+    "start": "start-app.bat"
+  }
+}
